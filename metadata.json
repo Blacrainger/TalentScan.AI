@@ -1,0 +1,5 @@
+{
+  "name": "TalentScan",
+  "description": "An academic HR application for automated CV screening and candidate ranking using TF-IDF and AI-powered semantic matching.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "ScreeningSession": {
+      "title": "Screening Session",
+      "description": "A record of a single CV screening and ranking session.",
+      "type": "object",
+      "properties": {
+        "jdText": {
+          "type": "string",
+          "description": "The job description used for the screening."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time the session was created."
+        },
+        "uid": {
+          "type": "string",
+          "description": "The user ID of the person who created the session."
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "CandidateResult"
+          },
+          "description": "The list of ranked candidates for this session."
+        }
+      },
+      "required": ["jdText", "timestamp", "uid", "results"]
+    },
+    "CandidateResult": {
+      "title": "Candidate Result",
+      "description": "The ranking and analysis for a single candidate.",
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "The name of the candidate's CV file."
+        },
+        "score": {
+          "type": "number",
+          "description": "The calculated similarity score (0-1)."
+        },
+        "aiSummary": {
+          "type": "string",
+          "description": "The AI-generated summary/explanation for this candidate."
+        }
+      },
+      "required": ["fileName", "score"]
+    }
+  },
+  "firestore": {
+    "/sessions/{sessionId}": {
+      "schema": "ScreeningSession",
+      "description": "A collection of screening sessions."
+    }
+  }
+}
