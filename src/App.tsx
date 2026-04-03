@@ -34,7 +34,6 @@ export default function App() {
 
   // Navigation State
   const [showSplash, setShowSplash] = useState(true);
-  const [showLanding, setShowLanding] = useState(true);
 
   // Firebase State
   const [user, setUser] = useState<User | null>(null);
@@ -90,7 +89,6 @@ export default function App() {
   const handleLogin = async () => {
     try {
       await loginWithGoogle();
-      setShowLanding(false); // Go to app after login
     } catch (err: any) {
       setError('Login failed: ' + err.message);
     }
@@ -102,7 +100,6 @@ export default function App() {
       setResults([]);
       setJdText('');
       setFiles([]);
-      setShowLanding(true); // Return to landing on logout
     } catch (err: any) {
       setError('Logout failed: ' + err.message);
     }
@@ -138,7 +135,6 @@ export default function App() {
     setFiles([]); // Clear current files as we are viewing history
     setIsHistoryOpen(false);
     setError(null);
-    setShowLanding(false); // Ensure we are in the app view
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,113 +189,67 @@ export default function App() {
 
   if (showSplash) {
     return (
-      <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-[100]">
+      <div className="fixed inset-0 bg-[#020617] flex flex-col items-center justify-center z-[100]">
         <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-center gap-6"
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col items-center gap-8"
         >
-          <div className="bg-blue-600 p-6 rounded-3xl shadow-2xl shadow-blue-200">
-            <FileText className="text-white w-20 h-20" />
+          <div className="relative">
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-4 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 rounded-full blur-2xl"
+            />
+            <div className="bg-slate-900 p-6 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 border border-slate-800 relative z-10 w-32 h-32 flex items-center justify-center">
+              <Search className="w-16 h-16 text-blue-400" />
+            </div>
           </div>
-          <div className="text-center">
-            <h1 className="text-4xl font-black text-gray-900 tracking-tighter">
-              Talent<span className="text-blue-600">Scan</span>
+          <div className="text-center space-y-2">
+            <h1 className="text-5xl font-black text-white tracking-tighter">
+              Talent<span className="text-blue-500">Scan</span>
             </h1>
-            <p className="text-gray-400 font-medium mt-2 uppercase tracking-widest text-xs">Academic HR Intelligence</p>
+            <p className="text-slate-400 font-semibold uppercase tracking-[0.3em] text-[10px]">Academic HR Intelligence</p>
           </div>
-          <div className="mt-8">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          <div className="flex items-center gap-3 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800/50">
+            <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+            <span className="text-xs font-medium text-slate-500">Initializing System...</span>
           </div>
         </motion.div>
-      </div>
-    );
-  }
-
-  if (showLanding && !user) {
-    return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://picsum.photos/seed/recruitment/1920/1080" 
-            alt="TalentScan Background" 
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-blue-900/80 backdrop-blur-[2px]" />
-        </div>
-
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="relative z-10 text-center px-6 max-w-4xl"
-        >
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl inline-block mb-8 border border-white/20">
-            <FileText className="text-white w-12 h-12" />
-          </div>
-          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-6">
-            Talent<span className="text-blue-400">Scan</span>
-          </h1>
-          <p className="text-lg md:text-2xl text-blue-100 font-medium mb-12 leading-relaxed max-w-2xl mx-auto">
-            The next generation of academic recruitment. Automated CV screening, semantic ranking, and AI-powered candidate analysis.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-sm sm:max-w-none mx-auto">
-            <button 
-              onClick={handleLogin}
-              className="w-full sm:w-auto px-6 py-4 sm:px-10 sm:py-5 bg-white text-blue-900 rounded-2xl font-black text-base sm:text-lg shadow-2xl hover:bg-blue-50 transition-all active:scale-95 flex items-center justify-center gap-3"
-            >
-              <LogIn className="w-5 h-5 sm:w-6 h-6" />
-              Sign In with Google
-            </button>
-            <button 
-              onClick={() => setShowLanding(false)}
-              className="w-full sm:w-auto px-6 py-4 sm:px-10 sm:py-5 bg-blue-600/20 backdrop-blur-md text-white border-2 border-white/30 rounded-2xl font-black text-base sm:text-lg hover:bg-white/10 transition-all active:scale-95"
-            >
-              Get Started
-            </button>
-          </div>
-          
-          <p className="mt-8 text-blue-200/60 text-sm font-medium uppercase tracking-widest">
-            Trusted by Academic Institutions Worldwide
-          </p>
-        </motion.div>
-
-        {/* Decorative Elements */}
-        <div className="absolute bottom-10 left-10 text-white/20 font-black text-9xl select-none pointer-events-none">HR</div>
-        <div className="absolute top-10 right-10 text-white/20 font-black text-9xl select-none pointer-events-none">AI</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-[#212529] font-sans">
+    <div className="min-h-screen bg-[#020617] text-slate-200 font-sans selection:bg-blue-500/30">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-6 px-8 flex justify-between items-center sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg">
-            <FileText className="text-white w-6 h-6" />
+      <header className="bg-[#020617]/80 backdrop-blur-xl border-b border-slate-800/50 py-4 px-8 flex justify-between items-center sticky top-0 z-40">
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-600/10 p-2 rounded-xl border border-blue-500/20">
+            <Search className="w-6 h-6 text-blue-500" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Talent<span className="text-blue-600">Scan</span></h1>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter text-white leading-none">Talent<span className="text-blue-500">Scan</span></h1>
+            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">HR Intelligence</span>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => setIsHistoryOpen(true)}
-                className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-blue-400 transition-colors"
               >
                 <History className="w-4 h-4" />
                 History
               </button>
-              <div className="h-6 w-px bg-gray-200" />
+              <div className="h-6 w-px bg-slate-800" />
               <div className="flex items-center gap-3">
-                <img src={user.photoURL || ''} alt={user.displayName || ''} className="w-8 h-8 rounded-full border border-gray-200" referrerPolicy="no-referrer" />
+                <img src={user.photoURL || ''} alt={user.displayName || ''} className="w-8 h-8 rounded-full border border-slate-700" referrerPolicy="no-referrer" />
                 <button 
                   onClick={handleLogout}
-                  className="text-xs font-bold text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors"
+                  className="text-xs font-bold text-slate-500 hover:text-red-400 uppercase tracking-widest transition-colors"
                 >
                   Sign Out
                 </button>
@@ -308,17 +258,17 @@ export default function App() {
           ) : (
             <button 
               onClick={handleLogin}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-sm"
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20"
             >
               <LogIn className="w-4 h-4" />
               Sign In
             </button>
           )}
 
-          <div className="h-6 w-px bg-gray-200" />
+          <div className="h-6 w-px bg-slate-800" />
 
           <label className="flex items-center gap-2 cursor-pointer select-none">
-            <div className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${useAi ? 'bg-blue-600' : 'bg-gray-300'}`}>
+            <div className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${useAi ? 'bg-blue-600' : 'bg-slate-700'}`}>
               <input 
                 type="checkbox" 
                 className="sr-only" 
@@ -330,61 +280,90 @@ export default function App() {
                 className="absolute top-1 left-0 w-4 h-4 bg-white rounded-full shadow-sm"
               />
             </div>
-            <span className="text-sm font-medium flex items-center gap-1">
-              <Sparkles className={`w-4 h-4 ${useAi ? 'text-blue-600' : 'text-gray-400'}`} />
+            <span className="text-sm font-medium flex items-center gap-1 text-slate-300">
+              <Sparkles className={`w-4 h-4 ${useAi ? 'text-blue-400' : 'text-slate-500'}`} />
               AI Enhancements
             </span>
           </label>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-8 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <main className="max-w-7xl mx-auto px-8 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Left Column: Input */}
-        <div className="lg:col-span-5 space-y-8">
-          <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Search className="w-5 h-5 text-blue-600" />
-              Job Description
-            </h2>
+        <div className="lg:col-span-5 space-y-10">
+          <section className="bg-slate-900/50 p-8 rounded-[2rem] shadow-2xl border border-slate-800/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold flex items-center gap-3 text-white">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Search className="w-5 h-5 text-blue-500" />
+                </div>
+                Job Description
+              </h2>
+              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Required</span>
+            </div>
             <textarea
-              className="w-full h-48 p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-sm leading-relaxed"
-              placeholder="Paste the job description here..."
+              className="w-full h-64 p-5 bg-slate-950/50 border border-slate-800 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all resize-none text-sm leading-relaxed text-slate-300 placeholder:text-slate-700 custom-scrollbar"
+              placeholder="Paste the job description here to begin the semantic matching process..."
               value={jdText}
               onChange={(e) => setJdText(e.target.value)}
             />
           </section>
 
-          <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <Upload className="w-5 h-5 text-blue-600" />
-              Upload CVs
-            </h2>
+          <section className="bg-slate-900/50 p-8 rounded-[2rem] shadow-2xl border border-slate-800/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold flex items-center gap-3 text-white">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Upload className="w-5 h-5 text-blue-500" />
+                </div>
+                Candidate CVs
+              </h2>
+              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{files.length} Files</span>
+            </div>
+            
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all group"
+              className="relative group cursor-pointer"
             >
-              <input 
-                type="file" 
-                multiple 
-                accept=".pdf,.docx,.zip" 
-                className="hidden" 
-                ref={fileInputRef}
-                onChange={handleFileChange}
-              />
-              <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3 group-hover:text-blue-500 transition-colors" />
-              <p className="text-sm font-medium text-gray-600">Click to upload or drag and drop</p>
-              <p className="text-xs text-gray-400 mt-1">PDF, DOCX, or ZIP files</p>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative border-2 border-dashed border-slate-800 rounded-2xl p-10 text-center bg-slate-950/30 hover:bg-slate-950/50 hover:border-blue-500/30 transition-all">
+                <input 
+                  type="file" 
+                  multiple 
+                  accept=".pdf,.docx,.zip" 
+                  className="hidden" 
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+                <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-800 group-hover:scale-110 transition-transform">
+                  <Upload className="w-8 h-8 text-slate-500 group-hover:text-blue-500 transition-colors" />
+                </div>
+                <p className="text-sm font-bold text-slate-300">Drop CVs here or click to browse</p>
+                <p className="text-[10px] text-slate-600 mt-2 font-bold uppercase tracking-widest">Supports PDF, DOCX, ZIP</p>
+              </div>
             </div>
 
             {files.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Selected Files ({files.length})</p>
-                <div className="max-h-40 overflow-y-auto space-y-2 pr-2">
+              <div className="mt-8 space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Queue</p>
+                  <button onClick={() => setFiles([])} className="text-[10px] font-bold text-red-500/50 hover:text-red-500 transition-colors uppercase tracking-widest">Clear All</button>
+                </div>
+                <div className="max-h-52 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                   {files.map((file, idx) => (
-                    <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border border-gray-100">
-                      <span className="text-xs font-medium truncate max-w-[200px]">{file.name}</span>
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                    </div>
+                    <motion.div 
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      key={idx} 
+                      className="flex items-center justify-between bg-slate-950/50 p-3 rounded-xl border border-slate-800/50 group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-1.5 bg-slate-900 rounded-lg border border-slate-800">
+                          <FileText className="w-3.5 h-3.5 text-slate-500" />
+                        </div>
+                        <span className="text-xs font-bold truncate max-w-[180px] text-slate-400 group-hover:text-slate-200 transition-colors">{file.name}</span>
+                      </div>
+                      <CheckCircle className="w-4 h-4 text-emerald-500/50" />
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -394,93 +373,133 @@ export default function App() {
           <button
             onClick={handleScreen}
             disabled={isScreening}
-            className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 ${
-              isScreening ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'
+            className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-2xl transition-all flex items-center justify-center gap-3 relative overflow-hidden group ${
+              isScreening 
+                ? 'bg-slate-800 cursor-not-allowed text-slate-500' 
+                : 'bg-blue-600 text-white hover:bg-blue-500 active:scale-[0.98] hover:shadow-blue-500/20'
             }`}
           >
+            {!isScreening && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
+            )}
             {isScreening ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Screening Candidates...
+                Processing...
               </>
             ) : (
               <>
-                <Search className="w-5 h-5" />
-                Start Screening
+                <Sparkles className="w-5 h-5" />
+                Analyze Candidates
               </>
             )}
           </button>
 
           {error && (
             <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-xl flex items-start gap-3"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-500/5 border border-red-500/20 text-red-400 p-5 rounded-2xl flex items-start gap-4"
             >
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <p className="text-sm font-medium">{error}</p>
+              <div className="p-2 bg-red-500/10 rounded-lg">
+                <AlertCircle className="w-5 h-5 shrink-0" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-1">System Error</p>
+                <p className="text-sm font-medium leading-relaxed">{error}</p>
+              </div>
             </motion.div>
           )}
         </div>
 
         {/* Right Column: Results */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[600px] flex flex-col">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Ranking Results</h2>
+          <div className="bg-slate-900/50 rounded-[2.5rem] shadow-2xl border border-slate-800/50 min-h-[700px] flex flex-col backdrop-blur-sm overflow-hidden">
+            <div className="p-8 border-b border-slate-800/50 flex justify-between items-center bg-slate-900/30">
+              <div>
+                <h2 className="text-2xl font-black text-white tracking-tighter">Ranking Results</h2>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Semantic Match Analysis</p>
+              </div>
               {results.length > 0 && (
-                <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase">
-                  {results.length} Candidates
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className="bg-blue-500/10 text-blue-500 text-[10px] font-black px-4 py-1.5 rounded-full uppercase border border-blue-500/20 tracking-widest">
+                    {results.length} Candidates
+                  </span>
+                </div>
               )}
             </div>
 
-            <div className="flex-1 p-6">
+            <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
               {results.length === 0 && !isScreening && (
-                <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                  <FileText className="w-16 h-16 mb-4" />
-                  <p className="text-lg font-medium">No results to display yet</p>
-                  <p className="text-sm">Upload CVs and start screening to see rankings</p>
+                <div className="h-full flex flex-col items-center justify-center text-center">
+                  <div className="w-24 h-24 bg-slate-950/50 rounded-[2rem] flex items-center justify-center mb-6 border border-slate-800/50">
+                    <FileText className="w-10 h-10 text-slate-700" />
+                  </div>
+                  <p className="text-xl font-bold text-slate-400">Awaiting Input</p>
+                  <p className="text-sm text-slate-600 mt-2 max-w-xs mx-auto">Upload CVs and provide a job description to generate rankings</p>
                 </div>
               )}
 
               {isScreening && (
                 <div className="h-full flex flex-col items-center justify-center text-center">
-                  <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-                  <p className="text-lg font-medium animate-pulse">Analyzing CVs...</p>
-                  <p className="text-sm text-gray-500 mt-2">Computing TF-IDF vectors and similarity scores</p>
+                  <div className="relative mb-8">
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      className="w-20 h-20 border-4 border-blue-500/20 border-t-blue-500 rounded-full"
+                    />
+                    <Search className="w-8 h-8 text-blue-500 absolute inset-0 m-auto animate-pulse" />
+                  </div>
+                  <p className="text-xl font-bold text-white">Analyzing Talent Pool</p>
+                  <p className="text-sm text-slate-500 mt-2">Extracting features and computing similarity scores...</p>
                 </div>
               )}
 
-              <div className="space-y-4">
-                <AnimatePresence>
+              <div className="space-y-6">
+                <AnimatePresence mode="popLayout">
                   {results.map((result, idx) => (
                     <motion.div
                       key={result.fileName}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      className="border border-gray-100 rounded-xl overflow-hidden hover:border-blue-200 transition-all"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className={`group border rounded-3xl overflow-hidden transition-all duration-300 ${
+                        expandedResult === result.fileName 
+                          ? 'border-blue-500/50 bg-blue-500/5 shadow-2xl shadow-blue-500/10' 
+                          : 'border-slate-800 bg-slate-950/30 hover:border-slate-700 hover:bg-slate-950/50'
+                      }`}
                     >
                       <div 
-                        className={`p-4 flex items-center justify-between cursor-pointer ${expandedResult === result.fileName ? 'bg-blue-50' : 'bg-white'}`}
+                        className="p-6 flex items-center justify-between cursor-pointer"
                         onClick={() => setExpandedResult(expandedResult === result.fileName ? null : result.fileName)}
                       >
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-500">
+                        <div className="flex items-center gap-6">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl border transition-all ${
+                            idx === 0 
+                              ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20' 
+                              : 'bg-slate-900 text-slate-500 border-slate-800 group-hover:border-slate-700'
+                          }`}>
                             {idx + 1}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-900 truncate max-w-[250px]">{result.fileName}</p>
-                            <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider">Candidate Profile</p>
+                            <p className="text-lg font-bold text-white truncate max-w-[300px] group-hover:text-blue-400 transition-colors">{result.fileName}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Candidate</span>
+                              {idx === 0 && <span className="bg-emerald-500/10 text-emerald-500 text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest border border-emerald-500/20">Top Match</span>}
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-8">
                           <div className="text-right">
-                            <p className="text-2xl font-black text-blue-600">{(result.score * 100).toFixed(1)}%</p>
-                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Match Score</p>
+                            <p className={`text-3xl font-black tracking-tighter ${idx === 0 ? 'text-blue-400' : 'text-slate-300'}`}>
+                              {(result.score * 100).toFixed(1)}<span className="text-sm ml-0.5 opacity-50">%</span>
+                            </p>
+                            <p className="text-[9px] text-slate-600 uppercase font-black tracking-[0.2em]">Match Score</p>
                           </div>
-                          {expandedResult === result.fileName ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                          <div className={`p-2 rounded-full transition-colors ${expandedResult === result.fileName ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-900 text-slate-600 group-hover:text-slate-400'}`}>
+                            {expandedResult === result.fileName ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                          </div>
                         </div>
                       </div>
 
@@ -490,38 +509,46 @@ export default function App() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="bg-white border-t border-gray-100"
+                            className="bg-slate-950/50 border-t border-slate-800/50"
                           >
-                            <div className="p-6 space-y-6">
+                            <div className="p-8 space-y-8">
                               {result.aiData ? (
                                 <>
-                                  <div className="space-y-2">
-                                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                                      <Sparkles className="w-3 h-3" />
-                                      AI Summary
-                                    </h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed italic">"{result.aiData.summary}"</p>
-                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3">
+                                      <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <Sparkles className="w-3 h-3" />
+                                        Executive Summary
+                                      </h4>
+                                      <p className="text-sm text-slate-300 leading-relaxed font-medium">
+                                        {result.aiData.summary}
+                                      </p>
+                                    </div>
 
-                                  <div className="space-y-2">
-                                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest">Matched Skills</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                      {result.aiData.skills.map((skill, sIdx) => (
-                                        <span key={sIdx} className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded border border-blue-100">
-                                          {skill}
-                                        </span>
-                                      ))}
+                                    <div className="space-y-3">
+                                      <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Core Competencies</h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        {result.aiData.skills.map((skill, sIdx) => (
+                                          <span key={sIdx} className="bg-slate-900 text-slate-300 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-slate-800 hover:border-blue-500/30 transition-colors">
+                                            {skill}
+                                          </span>
+                                        ))}
+                                      </div>
                                     </div>
                                   </div>
 
-                                  <div className="space-y-2">
-                                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest">Match Explanation</h4>
-                                    <p className="text-sm text-gray-600 leading-relaxed">{result.aiData.explanation}</p>
+                                  <div className="space-y-3 pt-4 border-t border-slate-800/50">
+                                    <h4 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Detailed Rationale</h4>
+                                    <p className="text-sm text-slate-400 leading-relaxed">
+                                      {result.aiData.explanation}
+                                    </p>
                                   </div>
                                 </>
                               ) : (
-                                <div className="text-center py-4 text-gray-400 text-sm">
-                                  Enable AI Enhancements to see detailed analysis
+                                <div className="text-center py-10 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
+                                  <Sparkles className="w-8 h-8 text-slate-700 mx-auto mb-3" />
+                                  <p className="text-sm font-bold text-slate-500">AI Analysis Unavailable</p>
+                                  <p className="text-xs text-slate-600 mt-1">Enable AI Enhancements and re-run screening for deep insights</p>
                                 </div>
                               )}
                             </div>
@@ -546,62 +573,71 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsHistoryOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
             <motion.div 
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#1E293B] shadow-2xl z-50 flex flex-col border-l border-slate-800"
             >
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+              <div className="p-6 border-b border-slate-800 flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <History className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-xl font-bold text-gray-900">Screening History</h2>
+                  <History className="w-5 h-5 text-blue-400" />
+                  <h2 className="text-xl font-bold text-white">Screening History</h2>
                 </div>
-                <button onClick={() => setIsHistoryOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <X className="w-5 h-5 text-gray-400" />
+                <button onClick={() => setIsHistoryOpen(false)} className="p-2 hover:bg-slate-800 rounded-full transition-colors">
+                  <X className="w-5 h-5 text-slate-500" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
                 {sessions.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                    <Clock className="w-12 h-12 mb-4" />
-                    <p className="font-medium">No history found</p>
-                    <p className="text-sm">Your screening sessions will appear here</p>
+                   <div className="h-full flex flex-col items-center justify-center text-center">
+                    <div className="w-20 h-20 bg-slate-950/50 rounded-[1.5rem] flex items-center justify-center mb-6 border border-slate-800/50">
+                      <Clock className="w-8 h-8 text-slate-700" />
+                    </div>
+                    <p className="font-bold text-slate-400">No history found</p>
+                    <p className="text-sm text-slate-600 mt-2 max-w-[200px] mx-auto">Your screening sessions will appear here once you start analyzing CVs</p>
                   </div>
                 ) : (
                   sessions.map((session) => (
-                    <div 
+                    <motion.div 
                       key={session.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
                       onClick={() => loadSession(session)}
-                      className="group p-4 border border-gray-100 rounded-xl hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer relative"
+                      className="group p-5 border border-slate-800 rounded-2xl hover:border-blue-500/30 hover:bg-blue-500/5 transition-all cursor-pointer relative bg-slate-950/20"
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                          {session.timestamp?.toDate().toLocaleString() || 'Unknown Date'}
-                        </p>
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            {session.timestamp?.toDate().toLocaleDateString() || 'Unknown Date'}
+                          </p>
+                        </div>
                         <button 
                           onClick={(e) => deleteSession(session.id, e)}
-                          className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                          className="p-2 text-slate-600 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-3 leading-relaxed">
+                      <p className="text-sm font-bold text-slate-300 line-clamp-2 mb-4 leading-relaxed group-hover:text-white transition-colors">
                         {session.jdText}
                       </p>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                          {session.results.length} Candidates
-                        </span>
-                        <span className="text-[10px] text-gray-400 font-medium italic">
-                          Top Match: {(Math.max(...session.results.map(r => r.score)) * 100).toFixed(0)}%
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="bg-blue-500/10 text-blue-500 text-[9px] font-black px-2.5 py-1 rounded-lg uppercase border border-blue-500/20 tracking-widest">
+                            {session.results.length} Candidates
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
+                          Top: {(Math.max(...session.results.map(r => r.score)) * 100).toFixed(0)}%
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
                   ))
                 )}
               </div>
